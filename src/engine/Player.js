@@ -8,6 +8,7 @@ class Player {
   }
 
   receiveCard (card) {
+    card.setPlayerId(this._id)
     this._hand.set(card.getId(), card)
   }
 

@@ -1,8 +1,8 @@
-const { readFileSync } = require
+const { readFileSync } = require('fs')
 const {
   BlackCard,
   WhiteCard
-} = require('Card')
+} = require('./Card')
 
 class Deck {
   constructor (cardLibraryPath) {
@@ -44,7 +44,7 @@ class Deck {
 
   _createBlackCards (cardList) {
     const formatedList = []
-    for (const card in cardList) {
+    for (const card of cardList) {
       formatedList.push(new BlackCard(formatedList.length, card.text, card.pick))
     }
     return formatedList
@@ -52,9 +52,9 @@ class Deck {
 
   _createWhiteCards (cardList) {
     const formatedList = []
-    for (const card in cardList) {
+    for (const text of cardList) {
       // initialize undrawn cards with negative playerId
-      formatedList.push(new WhiteCard(formatedList.length, card.text, -1))
+      formatedList.push(new WhiteCard(formatedList.length, text, -1))
     }
     return formatedList
   }
@@ -70,7 +70,9 @@ class Deck {
   _shuffle (cardPile) {
     for (let i = cardPile.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1))
-      [cardPile[i], cardPile[j]] = [cardPile[j], cardPile[i]]
+      const temp = cardPile[i]
+      cardPile[i] = cardPile[j]
+      cardPile[j] = temp
     }
   }
 

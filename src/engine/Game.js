@@ -1,8 +1,8 @@
-const Deck = require('Deck')
-const Player = require('Player')
+const Deck = require('./Deck')
+const Player = require('./Player')
 
 class Game {
-  constructor(cardLibraryPath) {
+  constructor (cardLibraryPath) {
     this._handSize = 10
     this._players = new Map()
     this._deck = new Deck(cardLibraryPath)
@@ -18,7 +18,7 @@ class Game {
     }
     this._judge = 0
     this._pot = {
-      blackCard,
+      blackCard: null,
       whiteCards: new Map()
     }
   }
@@ -78,9 +78,13 @@ class Game {
     return playerObject.getPlayerDetails()
   }
 
+  getCardPot () {
+    return this._pot
+  }
+
   // the servers privates
 
-  _waitForPlayers () {
+  async _waitForPlayers () {
     while (!this._players.length >= 3) {
       console.log('Waiting for players..')
       await this._delay(1000)

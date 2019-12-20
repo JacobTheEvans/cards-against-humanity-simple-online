@@ -8,7 +8,7 @@ class Card {
     return this._text
   }
 
-  getCardId () {
+  getId () {
     return this._cardId
   }
 }
