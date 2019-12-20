@@ -35,6 +35,7 @@ class Game {
       playerObject.receiveCard(card)
     }
     this._players.set(playerId, playerObject)
+    this._pot.whiteCards.set(playerId, [])
     return playerObject.getPlayerDetails()
   }
 
@@ -48,8 +49,10 @@ class Game {
   }
 
   // draw X cards for player with playerId and return updated player details
-  drawWhiteCards (playerId, count) {
+  drawWhiteCards (playerId) {
     const playerObject = this._players.get(playerId)
+    const { hand } = playerObject.getPlayerDetails()
+    const count = this._handSize - hand.size
     for (let i = 0; i < count; i++) {
       const card = this._deck.drawWhite()
       playerObject.receiveCard(card)
@@ -73,7 +76,10 @@ class Game {
     const playerObject = this._players.get(playerId)
     for (const cardId of cardIdList) {
       const card = playerObject.removeCard(cardId)
-      if (card) this._pot.whiteCards.set(playerId, card)
+      if (card) {
+        const playerCards = this._pot.whiteCards.get(playerId)
+        playerCards.push(card)
+      }
     }
     return playerObject.getPlayerDetails()
   }
@@ -127,7 +133,10 @@ class Game {
   }
 
   _clearPot () {
-    // discard all white cards and remove black card
+    this._pot.blackCard = null
+    for (const playerCards of this._pot.whiteCards) {
+
+    }
   }
 
   async _delay (t) {
