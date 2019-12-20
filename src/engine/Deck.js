@@ -1,56 +1,65 @@
+const { readFileSync } = require
 const {
   BlackCard,
   WhiteCard
 } = require('Card')
 
 class Deck {
-  constructor(cardLibraryPath) {
-    const cardFile = readFileSync(cardLibraryPath)
-    const cardPile = JSON.parse(cardFile)
+  constructor (cardLibraryPath) {
+    const rawLibrary = readFileSync(cardLibraryPath)
+    const cardList = JSON.parse(rawLibrary)
 
-    this._blackCards = this._createBlackCards(cardPile.blackCards)
-    this._whiteCards = this._createWhiteCards(cardPile.whiteCards)
+    this._blackCards = this._createBlackCards(cardList.blackCards)
+    this._whiteCards = this._createWhiteCards(cardList.whiteCards)
     this._shuffle(this._blackCards)
     this._shuffle(this._whiteCards)
     this._discardPile = []
   }
 
-  drawBlack() {
-    if (this._blackDeck.length > 0) {
-      return this._blackDeck.pop()
+  drawBlack () {
+    if (this._blackCards.length > 0) {
+      return this._blackCards.pop()
     }
   }
 
-  drawWhite() {
+  drawWhite () {
     if (this._whiteCards.length === 0) {
       this._shuffleDiscardPile()
     }
-    return this._whiteDeck.pop()
+    return this._whiteCards.pop()
   }
 
-  discard(card) {
+  discard (card) {
     card.setPlayerId(-1)
     this._discardPile.push(card)
   }
 
-  _createBlackCards(cardPile) {
-    const formatedPile = []
-    for (const card in cardPile) {
-      formatedPile.push(new BlackCard(formatedPile.length, card.text, card.pick))
+  getCardCount () {
+    return {
+      blackStack: this._blackCards.length,
+      whiteStack: this._whiteCards.length,
+      discardStack: this._discardPile.length
     }
-    return formatedPile
   }
 
-  _createWhiteCards(cardPile) {
-    const formatedPile = []
-    for (const card in cardPile) {
+  _createBlackCards (cardList) {
+    const formatedList = []
+    for (const card in cardList) {
+      formatedList.push(new BlackCard(formatedList.length, card.text, card.pick))
+    }
+    return formatedList
+  }
+
+  _createWhiteCards (cardList) {
+    const formatedList = []
+    for (const card in cardList) {
       // initialize undrawn cards with negative playerId
-      formatedPile.push(new WhiteCard(formatedPile.length, card.text, -1))
+      formatedList.push(new WhiteCard(formatedList.length, card.text, -1))
     }
-    return formatedPile
+    return formatedList
   }
 
-  _shuffleDiscardPile() {
+  _shuffleDiscardPile () {
     if (this._discardPile.length > 0) {
       this._shuffle(this._discardPile)
       this._whiteCards = this._discardPile
@@ -58,14 +67,14 @@ class Deck {
     }
   }
 
-  _shuffle(cardPile) {
-    for (let i = array.length - 1; i > 0; i--) {
+  _shuffle (cardPile) {
+    for (let i = cardPile.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1))
       [cardPile[i], cardPile[j]] = [cardPile[j], cardPile[i]]
     }
   }
 
-  _drawCard(cardPile) {
+  _drawCard (cardPile) {
     return cardPile.pop()
   }
 }

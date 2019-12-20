@@ -4,11 +4,11 @@ class Card {
     this._text = text
   }
 
-  getText() {
+  getText () {
     return this._text
   }
 
-  getCardId() {
+  getCardId () {
     return this._cardId
   }
 }
@@ -19,7 +19,7 @@ class BlackCard extends Card {
     this._picks = picks
   }
 
-  getPicks() {
+  getPicks () {
     return this._picks
   }
 }
@@ -30,11 +30,11 @@ class WhiteCard extends Card {
     this._playerId = playerId
   }
 
-  getPlayerId() {
+  getPlayerId () {
     return this._playerId
   }
 
-  setPlayerId(playerId) {
+  setPlayerId (playerId) {
     this._playerId = playerId
   }
 }

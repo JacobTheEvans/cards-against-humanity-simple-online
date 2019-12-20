@@ -1,43 +1,43 @@
-const {
-  WhiteCard
-} = require('Card')
-
 class Player {
-  constructor(id, name) {
+  constructor (id, name) {
     this._id = id
     this._name = name
     this._hand = new Map()
     this._score = 0
+    this._state = 0
   }
 
-  addCardToHand(card) {
+  receiveCard (card) {
     this._hand.set(card.getId(), card)
   }
 
-  getCardFromHand(cardId) {
+  removeCard (cardId) {
     const card = this._hand.get(cardId)
-    this._hand.delete(cardId)
-    return card
+    if (card) {
+      this._hand.delete(cardId)
+      return card
+    }
   }
 
-  setScore(score) {
-    this._score = score
+  setPlayerDetails (details) {
+    const {
+      score,
+      state,
+      hand
+    } = details
+    if (score) this._score = score
+    if (state) this._state = state
+    if (hand) this._hand = hand
   }
 
-  getHand() {
-    return this._hand
-  }
-
-  getScore() {
-    return this._score
-  }
-
-  getId() {
-    return this._id
-  }
-
-  getName() {
-    return this._name
+  getPlayerDetails () {
+    return {
+      id: this._id,
+      name: this._name,
+      score: this._score,
+      state: this._state,
+      hand: this._hand
+    }
   }
 }
 
