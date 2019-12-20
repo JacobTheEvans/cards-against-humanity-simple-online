@@ -41,7 +41,7 @@ class Game {
   // discard all hand cards and delete player from map
   leaveGame (playerId) {
     const { hand } = this._players.get(playerId).getPlayerDetails()
-    for (card of hand) {
+    for (const card of hand) {
       this._deck.discard(card)
     }
     this._players.delete(playerId)
@@ -60,7 +60,7 @@ class Game {
   // discard card with cardId from player hand. return updated player details
   discardCards (playerId, cardIdList) {
     const playerObject = this._players.get(playerId)
-    for (cardId of cardIdList) {
+    for (const cardId of cardIdList) {
       const card = playerObject.removeCard(cardId)
       if (card) this._deck.discard(card)
     }
@@ -71,7 +71,7 @@ class Game {
   // playerId as key, returns updated player details
   playCards (playerId, cardIdList) {
     const playerObject = this._players.get(playerId)
-    for (cardId of cardIdList) {
+    for (const cardId of cardIdList) {
       const card = playerObject.removeCard(cardId)
       if (card) this._pot.whiteCards.set(playerId, card)
     }
@@ -107,10 +107,9 @@ class Game {
     const { blackStack } = this._deck.getCardCount()
     if (blackStack === 0) {
       const winner = Object.keys(this._players)
-        .sort((a,b) => {
-          return this._players[a].getScore()-this._players[b].getScore()
-        }
-      )
+        .sort((a, b) => {
+          return this._players[a].getScore() - this._players[b].getScore()
+        })
       const { name, score } = winner.getPlayerDetails()
       this._currentGameState = this._gameStates.over
       console.log(`Winner: ${name} with ${score} rounds won.`)
@@ -118,8 +117,8 @@ class Game {
   }
 
   _selectJudge () {
-    this._judge < this._players.length-1
-      ? this._judge +=1
+    this._judge < this._players.length - 1
+      ? this._judge += 1
       : this._judge = 0
   }
 
