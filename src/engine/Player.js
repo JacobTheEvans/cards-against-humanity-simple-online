@@ -5,6 +5,7 @@ class Player {
     this._hand = new Map()
     this._score = 0
     this._state = 0
+    this._judge = false
   }
 
   receiveCard (card) {
@@ -20,24 +21,27 @@ class Player {
     }
   }
 
-  setPlayerDetails (details) {
+  setDetails (details) {
     const {
       score,
       state,
-      hand
+      hand,
+      judge
     } = details
     if (score) this._score = score
     if (state) this._state = state
     if (hand) this._hand = hand
+    if (judge) this._judge = judge
   }
 
-  getPlayerDetails () {
+  getDetails () {
     return {
       id: this._id,
       name: this._name,
       score: this._score,
       state: this._state,
-      hand: this._hand
+      hand: this._hand,
+      judge: this._judge
     }
   }
 }
