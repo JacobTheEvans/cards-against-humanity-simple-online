@@ -48,18 +48,6 @@ class Game {
     this._players.delete(playerId)
   }
 
-  // draw X cards for player with playerId and return updated player details
-  drawWhiteCards (playerId) {
-    const playerObject = this._players.get(playerId)
-    const { hand } = playerObject.getDetails()
-    const count = this._handSize - hand.size
-    for (let i = 0; i < count; i++) {
-      const card = this._deck.drawWhite()
-      playerObject.receiveCard(card)
-    }
-    return playerObject.getDetails()
-  }
-
   // discard card with cardId from player hand. return updated player details
   discardCards (playerId, cardIdList) {
     const playerObject = this._players.get(playerId)
@@ -67,6 +55,7 @@ class Game {
       const card = playerObject.removeCard(cardId)
       if (card) this._deck.discard(card)
     }
+    this._drawWhiteCards(playerId)
     return playerObject.getDetails()
   }
 
@@ -74,12 +63,18 @@ class Game {
   // playerId as key, returns updated player details
   playCards (playerId, cardIdList) {
     const playerObject = this._players.get(playerId)
-    for (const cardId of cardIdList) {
-      const card = playerObject.removeCard(cardId)
-      if (card) {
-        const playerCards = this._pot.whiteCards.get(playerId)
-        playerCards.push(card)
+    // only accept played cards if pot for player is empty and played card
+    // amount is the same the black card requires
+    if (this._pot.whiteCards.get(playerId).length === 0 &&
+      cardIdList.length === this._pot.blackCard.getPicks()) {
+      for (const cardId of cardIdList) {
+        const card = playerObject.removeCard(cardId)
+        if (card) {
+          const playerCards = this._pot.whiteCards.get(playerId)
+          playerCards.push(card)
+        }
       }
+      this._drawWhiteCards(playerId)
     }
     return playerObject.getDetails()
   }
@@ -88,17 +83,60 @@ class Game {
     return this._pot
   }
 
+  getCardPiles () {
+    return this._deck.getCardPiles()
+  }
+
   // the servers privates
 
-  _update () {
+  _startRound () {
     this._checkWinConditions()
     this._selectJudge()
     this._drawBlackCard()
-    this._endRound()
+  }
+
+  _updateRound () {
+    if (this._checkPlayersReady()) {
+      this._endRound()
+    } else {
+      console.log('not ready yet')
+    }
+  }
+
+  _endRound () {
+    this._pot.blackCard = null
+    for (const playerPot of this._pot.whiteCards) {
+      const playerId = playerPot[0]
+      const playerCards = playerPot[1]
+      const playerObject = this._players.get(playerId)
+      playerObject.setDetails({ judge: false })
+      for (const card of playerCards) {
+        this._deck.discard(card)
+      }
+    }
+    this._pot.whiteCards.clear()
+  }
+
+  // draw X cards for player with playerId and return updated player details
+  _drawWhiteCards (playerId) {
+    const playerObject = this._players.get(playerId)
+    const { hand } = playerObject.getDetails()
+    const count = this._handSize - hand.size
+    for (let i = 0; i < count; i++) {
+      const card = this._deck.drawWhite()
+      playerObject.receiveCard(card)
+    }
+  }
+
+  _checkPlayersReady () {
+    for (const whiteCards of this._pot.whiteCards.values()) {
+      if (whiteCards.length === 0) return false
+    }
+    return true
   }
 
   _checkWinConditions () {
-    const { blackStack } = this._deck.getCardCount()
+    const { blackStack } = this._deck.getCardPiles()
     if (blackStack === 0) {
       const sortedMap = new Map([...this._players.entries()].sort((a, b) => {
         return b[1].score - a[1].score
@@ -124,18 +162,6 @@ class Game {
 
   _drawBlackCard () {
     this._pot.blackCard = this._deck.drawBlack()
-  }
-
-  _endRound () {
-    this._pot.blackCard = null
-    for (const playerId of this._pot.player) {
-      const playerObject = this._players.get(playerId)
-      playerObject.setDetails({ judge: false })
-      for (const card of playerId) {
-        this._deck.discard(card)
-      }
-      this._pot.player[playerId] = []
-    }
   }
 }
 

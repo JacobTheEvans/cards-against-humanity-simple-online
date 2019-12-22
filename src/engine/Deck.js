@@ -34,7 +34,7 @@ class Deck {
     this._discardPile.push(card)
   }
 
-  getCardCount () {
+  getCardPiles () {
     return {
       blackStack: this._blackCards.length,
       whiteStack: this._whiteCards.length,
