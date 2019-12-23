@@ -26,7 +26,6 @@ class Game {
       whiteCards: new Map(),
       winner: null
     }
-    this.update = this.update.bind(this)
   }
 
   // functions that can be called by the socket.io client requests
