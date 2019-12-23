@@ -10,19 +10,22 @@ const Form = styled.form`
   transform: translate(-50%, -50%);
   display: flex;
   align-items: center;
+  justify-content: center;
 `
 
 const Input = styled.input`
   flex: 2;
-  padding: 12px 20px;
-  margin: 8px 5px;
+  padding: 14px 20px;
+  margin: 7px 5px;
   box-sizing: border-box;
+  border-color: white;
+  border-style:solid;
 `
 
 const Button = styled.button`
   flex: 1;
   display:inline-block;
-  padding: 14px 21px;
+  padding: 13px 21px;
   border: 0.16em solid #FFFFFF;
   margin: 0 0.3em 0.3em 0;
   box-sizing: border-box;
@@ -33,15 +36,16 @@ const Button = styled.button`
   color: #000;
   text-align:center;
   transition: all 0.15s;
+  background-color: white;
 
   &:hover {
     color: #000;
-    border-color: #DDDDDD;
+    border-color: black;
   }
 
   &:active {
     color: #BBBBBB;
-    border-color: #BBBBBB;
+    border-color: black;
   }
 
   @media all and (max-width:30em) {

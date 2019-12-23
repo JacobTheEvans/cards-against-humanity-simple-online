@@ -16,15 +16,16 @@ const Button = styled.button`
   color: #000;
   text-align:center;
   transition: all 0.15s;
+  background-color: white;
 
   &:hover {
     color: #000;
-    border-color: #DDDDDD;
+    border-color: #000;
   }
 
   &:active {
     color: #BBBBBB;
-    border-color: #BBBBBB;
+    border-color: #000;
   }
 
   @media all and (max-width:30em) {

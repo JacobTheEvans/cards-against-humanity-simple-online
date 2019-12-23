@@ -9,6 +9,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: 'Lato', sans-serif;
+  background: #E0E0E0;
 }
 * {
   box-sizing: border-box

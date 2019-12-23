@@ -30,6 +30,13 @@ class SocketIoConnection extends Component {
       socket.on('refresh_client', () => {
         window.location.reload()
       })
+      socket.on(`update_${username}`, playerData => {
+        this.setState({
+          playerData
+        }, () => {
+          console.log(this.state.playerData)
+        })
+      })
     })
   }
 

@@ -1,13 +1,13 @@
 import React from 'react'
 import styled from 'styled-components'
-import { withSocketIo } from '../../SocketIo'
+import { withSocketIo } from '../../../SocketIo'
 
 const Button = styled.button`
-  margin-left: auto;
+  border-radius: 20px;
+  margin: 10px 20px;
   display:inline-block;
   padding: 14px 21px;
   border: 0.16em solid #FFFFFF;
-  margin: 0 0.3em 0.3em 0;
   box-sizing: border-box;
   text-decoration:none;
   text-transform:uppercase;
@@ -17,15 +17,17 @@ const Button = styled.button`
   text-align:center;
   transition: all 0.15s;
   background-color: white;
+  height: 325px;
+  width: 225px;
 
   &:hover {
     color: #000;
-    border-color: #000;
+    border-color: ${({ disabled }) => disabled ? 'white' : 'black'};
   }
 
   &:active {
     color: #BBBBBB;
-    border-color: #000;
+    border-color: ${({ disabled }) => disabled ? 'white' : 'black'};
   }
 
   @media all and (max-width:30em) {
@@ -36,18 +38,20 @@ const Button = styled.button`
   }
 `
 
-function newGame (socket) {
-  socket.emit('end_game')
+function pickCard (socket, cardId, disabled) {
+  if (disabled) return
+  socket.emit('pick_winner', cardId)
 }
 
-function NewGame ({ socket }) {
+function WhiteCard ({ card, hidden, playerIsJudge, socket }) {
   return (
     <Button
-      onClick={() => newGame(socket)}
+      disabled={!playerIsJudge}
+      onClick={() => pickCard(socket, card._cardId, !playerIsJudge)}
     >
-      New Game
+      {hidden ? '' : card._text}
     </Button>
   )
 }
 
-export default withSocketIo(NewGame)
+export default withSocketIo(WhiteCard)
