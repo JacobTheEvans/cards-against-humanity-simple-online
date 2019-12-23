@@ -7,6 +7,7 @@ class Game {
     this._players = new Map()
     this._score = []
     this._deck = new Deck(cardLibraryPath)
+    this._gameStarted = false
     this._gameStates = {
       idle: 0,
       play: 1,
@@ -53,6 +54,10 @@ class Game {
     this._players.delete(playerId)
   }
 
+  startGame () {
+    this._gameStarted = true
+  }
+
   // discard card with cardId from player hand. return updated player details
   discardCards (playerId, cardIdList) {
     const playerObject = this._players.get(playerId)
@@ -65,7 +70,7 @@ class Game {
   }
 
   getPlayers () {
-    let playersStatus = {}
+    const playersStatus = {}
     for (const player of this._players.values()) {
       playersStatus[player._name] = player
     }
@@ -116,18 +121,20 @@ class Game {
   // the servers privates
 
   update () {
-    switch (this._currentGameState) {
-      case this._gameStates.idle:
-        this._startRound()
-        break
-      case this._gameStates.play:
-        this._playingPhase()
-        break
-      case this._gameStates.judge:
-        this._judgingPhase()
-        break
-      case this._gameStates.gameover:
-        break
+    if (this._gameStarted) {
+      switch (this._currentGameState) {
+        case this._gameStates.idle:
+          this._startRound()
+          break
+        case this._gameStates.play:
+          this._playingPhase()
+          break
+        case this._gameStates.judge:
+          this._judgingPhase()
+          break
+        case this._gameStates.gameover:
+          break
+      }
     }
   }
 
