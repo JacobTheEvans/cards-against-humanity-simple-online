@@ -5,21 +5,25 @@ class Game {
   constructor (cardLibraryPath) {
     this._handSize = 10
     this._players = new Map()
+    this._score = []
     this._deck = new Deck(cardLibraryPath)
     this._gameStates = {
-      wait: 0,
+      idle: 0,
       play: 1,
-      over: 2
+      judge: 2,
+      gameover: 3
     }
     this._currentGameState = this._gameStates.wait
     this._playerStates = {
       idle: 0,
-      active: 1
+      play: 1,
+      judge: 2
     }
     this._judge = 0
     this._pot = {
       blackCard: null,
-      whiteCards: new Map()
+      whiteCards: new Map(),
+      winner: null
     }
   }
 
@@ -35,6 +39,7 @@ class Game {
       playerObject.receiveCard(card)
     }
     this._players.set(playerId, playerObject)
+    this._score[playerId] = 0
     this._pot.whiteCards.set(playerId, [])
     return playerObject.getDetails()
   }
@@ -63,9 +68,10 @@ class Game {
   // playerId as key, returns updated player details
   playCards (playerId, cardIdList) {
     const playerObject = this._players.get(playerId)
+    const { state } = playerObject.getDetails()
     // only accept played cards if pot for player is empty and played card
     // amount is the same the black card requires
-    if (this._pot.whiteCards.get(playerId).length === 0 &&
+    if (state === this._players.play && this._pot.whiteCards.get(playerId).length === 0 &&
       cardIdList.length === this._pot.blackCard.getPicks()) {
       for (const cardId of cardIdList) {
         const card = playerObject.removeCard(cardId)
@@ -75,8 +81,17 @@ class Game {
         }
       }
       this._drawWhiteCards(playerId)
+      playerObject.setDetails({ state: this._playerStates.idle })
     }
     return playerObject.getDetails()
+  }
+
+  chooseWinner (playerId, potIndex) {
+    playerObject.setDetails({ state: this._playerStates.idle })
+    
+    const playerId = Array.from(this._pot.whiteCards.keys())[potIndex]
+    this._score[playerId] = this._score[playerId] + 1
+    return this._score
   }
 
   getCardPot () {
@@ -89,17 +104,44 @@ class Game {
 
   // the servers privates
 
-  _startRound () {
-    this._checkWinConditions()
-    this._selectJudge()
-    this._drawBlackCard()
+  _update () {
+    switch (this._currentGameState) {
+      case this._gameStates.idle:
+        this._startRound()
+        break
+      case this._gameStates.play:
+        this._playingPhase()
+        break
+      case this._gameStates.judge:
+        this._judgingPhase()
+        break
+      case this._gameStates.gameover:
+        break
+    }
+    setInterval(this._update(), 250)
   }
 
-  _updateRound () {
-    if (this._checkPlayersReady()) {
-      this._endRound()
+  _startRound () {
+    this._selectJudge()
+    this._drawBlackCard()
+    this._currentGameState = this._gameStates.play
+  }
+
+  _playingPhase () {
+    if (this._checkAllCardsPlayed()) {
+      this._currentGameState = this._gameStates.judge
     } else {
-      console.log('not ready yet')
+      console.log('not all palyers ready yet')
+    }
+  }
+
+  _judgingPhase () {
+    if (this._checkJudgingDone()) {
+      this._checkWinConditions()
+      this._endRound()
+      this._currentGameState = this._gameStates.idle
+    } else {
+      console.log('not done juding yet')
     }
   }
 
@@ -117,6 +159,10 @@ class Game {
     this._pot.whiteCards.clear()
   }
 
+  _drawBlackCard () {
+    this._pot.blackCard = this._deck.drawBlack()
+  }
+
   // draw X cards for player with playerId and return updated player details
   _drawWhiteCards (playerId) {
     const playerObject = this._players.get(playerId)
@@ -128,11 +174,15 @@ class Game {
     }
   }
 
-  _checkPlayersReady () {
+  _checkAllCardsPlayed () {
     for (const whiteCards of this._pot.whiteCards.values()) {
       if (whiteCards.length === 0) return false
     }
     return true
+  }
+
+  _checkJudgingDone () {
+
   }
 
   _checkWinConditions () {
@@ -142,7 +192,7 @@ class Game {
         return b[1].score - a[1].score
       }))
       const { name, score } = sortedMap.values().next().value
-      this._currentGameState = this._gameStates.over
+      this._currentGameState = this._gameStates.gameover
       console.log(`Winner: ${name} with ${score} rounds won.`)
     } else {
       console.log('No one won yet.')
@@ -160,9 +210,7 @@ class Game {
     console.log(`New judge: ${name}`)
   }
 
-  _drawBlackCard () {
-    this._pot.blackCard = this._deck.drawBlack()
-  }
+
 }
 
 module.exports = Game

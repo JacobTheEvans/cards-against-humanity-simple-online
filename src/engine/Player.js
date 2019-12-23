@@ -3,7 +3,6 @@ class Player {
     this._id = id
     this._name = name
     this._hand = new Map()
-    this._score = 0
     this._state = 0
     this._judge = false
   }
@@ -23,12 +22,10 @@ class Player {
 
   setDetails (details) {
     const {
-      score,
       state,
       hand,
       judge
     } = details
-    if (score) this._score = score
     if (state) this._state = state
     if (hand) this._hand = hand
     if (judge) this._judge = judge
@@ -38,7 +35,6 @@ class Player {
     return {
       id: this._id,
       name: this._name,
-      score: this._score,
       state: this._state,
       hand: this._hand,
       judge: this._judge

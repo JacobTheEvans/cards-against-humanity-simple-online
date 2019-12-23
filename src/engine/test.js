@@ -44,18 +44,20 @@ console.log('##############player2 and 3 should have got new cards')
 console.log(player2State)
 console.log(player3State)
 
-console.log('###############should be possible to end this round')
-currentGame._updateRound()
+currentGame.chooseWinner(1)
 
-console.log('##########current pot should be empty')
-console.log(thePot)
+// console.log('###############should be possible to end this round')
+// currentGame._updateRound()
 
-console.log('###############check card piles')
-console.log(currentGame.getCardPiles())
+// console.log('##########current pot should be empty')
+// console.log(thePot)
 
-// start new round
-currentGame._startRound()
-console.log(thePot)
+// console.log('###############check card piles')
+// console.log(currentGame.getCardPiles())
+
+// // start new round
+// currentGame._startRound()
+// console.log(thePot)
 
 function playCards (playerState) {
   const numPicks = thePot.blackCard.getPicks()
