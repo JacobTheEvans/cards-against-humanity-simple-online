@@ -191,7 +191,14 @@ class Game {
   }
 
   _drawBlackCard () {
-    this._pot.blackCard = this._deck.drawBlack()
+    let drawingBlackCards = true
+    while (drawingBlackCards) {
+      const blackCard = this._deck.drawBlack()
+      if (blackCard.getPicks() === 1) {
+        this._pot.blackCard = blackCard
+        drawingBlackCards = false
+      }
+    }
   }
 
   // draw X cards for player with playerId and return updated player details
