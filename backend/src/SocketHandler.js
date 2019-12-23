@@ -6,6 +6,7 @@ class SocketHandler {
     this._log = pino()
     this._currentClients = new Map()
     this._currentGame = null
+    this._currentGameInterval = null
     this._socketServer = socketServer
     this._setupHandlers()
   }
@@ -14,8 +15,8 @@ class SocketHandler {
     this._socketServer.on('connection', socket => {
       this._handleClientJoin(socket)
       this._ensureGame()
-      socket.on('set_username', data => {
-        this._handleSetUsername(socket, data)
+      socket.on('set_username', username => {
+        this._handleSetUsername(socket, username)
       })
       socket.on('end_game', () => {
         this._handleEndGame(socket)
@@ -34,16 +35,17 @@ class SocketHandler {
   _ensureGame () {
     if (!this._currentGame) {
       this._log.info('No game is currently operating generating...')
-      this._currentGame = new Game('../fixtures/base-set.json')
+      this._currentGame = new Game(`${__dirname}/engine/fixtures/base-set.json`)
+      this._currentGameInterval = setInterval(this._currentGame.update, 1000)
     }
   }
 
-  _handleSetUsername (socket, { username }) {
+  _handleSetUsername (socket, username) {
     this._log.info(`Client setting username: ${username}`, socket.id)
-    const { playerId } = this._currentGame.joinGame(username)
+    const { id } = this._currentGame.joinGame(username)
     this._currentClients.set(socket.id, {
       username,
-      playerId
+      playerId: id
     })
   }
 
@@ -54,6 +56,8 @@ class SocketHandler {
       socket.id
     )
     this._currentGame = null
+    clearInterval(this._currentGameInterval)
+    this._currentGameInterval = null
     socket.emit('refresh_client')
   }
 
@@ -64,7 +68,9 @@ class SocketHandler {
       socket.id
     )
     this._currentClients.delete(socket.id)
-    this._currentGame.leaveGame(playerId)
+    if (this._currentGame) {
+      this._currentGame.leaveGame(playerId)
+    }
   }
 }
 
