@@ -98,14 +98,21 @@ class Game {
     return playerObject.getDetails()
   }
 
-  chooseWinner (playerId, potIndex) {
+  chooseWinner (playerId, cardId) {
     const { judge } = this._players.get(playerId).getDetails()
     if (judge && this._currentGameState === this._gameStates.judge) {
-      console.log('winner chosen..')
-      const winnerId = Array.from(this._pot.whiteCards.keys())[potIndex]
-      const { score } = this._players.get(winnerId).getDetails()
-      this._players.get(winnerId).setScore(score + 1)
-      this._players.get(playerId).setState(this._playerStates.idle)
+      for (const id of this._pot.whiteCards) {
+        const cards = this._pot.get(id).values()
+        const winningCard = cards.filter(card => {
+          return card._id === cardId
+        })
+        if (winningCard) {
+          const { score } = this._players.get(id).getDetails()
+          this._players.get(id).setScore(score + 1)
+          this._players.get(playerId).setState(this._playerStates.idle)
+          break
+        }
+      }
     }
   }
 
