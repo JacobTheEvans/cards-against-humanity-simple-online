@@ -1,35 +1,21 @@
-import React, { Component } from 'react'
-import socketIOClient from 'socket.io-client'
-class App extends Component {
-  constructor () {
-    super()
-    this.state = {
-      response: false,
-      endpoint: 'http://localhost:8080'
-    }
-  }
+import React from 'react'
+import { createSocketIoProvider } from './SocketIo'
+import Login from './components/Login'
+import Toolbar from './components/Toolbar'
 
-  componentDidMount () {
-    const { endpoint } = this.state
-    const socket = socketIOClient(endpoint)
-    socket.on('test', data => this.setState({ response: data }))
-  }
+const SocketIoProvider = createSocketIoProvider()
 
-  render () {
-    const { response } = this.state
-    return (
-      <div style={{ textAlign: 'center' }}>
-        {response ? (
-          <p>
-            The temperature in Florence is: {response} °F
-          </p>
-        ) : (
-          <p>
-             Loading...
-          </p>
-        )}
-      </div>
-    )
+function App () {
+  if (!window.localStorage.getItem('username')) {
+    return <Login />
   }
+  return (
+    <SocketIoProvider
+      username={window.localStorage.getItem('username')}
+    >
+      <Toolbar />
+    </SocketIoProvider>
+  )
 }
+
 export default App

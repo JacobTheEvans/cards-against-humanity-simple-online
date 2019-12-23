@@ -229,8 +229,6 @@ class Game {
     const { name } = playerObject.getDetails()
     console.log(`New judge: ${name}`)
   }
-
-
 }
 
 module.exports = Game
