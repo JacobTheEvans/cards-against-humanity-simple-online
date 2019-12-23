@@ -68,7 +68,7 @@ class Game {
     return playerObject.getDetails()
   }
 
-  getPlayers () {
+  _getPlayers () {
     const playersStatus = {}
     for (const player of this._players.values()) {
       playersStatus[player._name] = player
@@ -135,6 +135,7 @@ class Game {
           break
       }
     }
+    return this._getPlayers()
   }
 
   _startRound () {
