@@ -1,5 +1,4 @@
 http-server:
   port: HTTP_SERVER_PORT
 socket-server:
-  port: SOCKET_SERVER_PORT
   base-path: SOCKET_SERVER_BASE_PATH

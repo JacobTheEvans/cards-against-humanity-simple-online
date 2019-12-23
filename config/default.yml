@@ -1,5 +1,4 @@
 http-server:
-  port: 80
+  port: 8080
 socket-server:
-  port: 81
   base-path: '/game'
