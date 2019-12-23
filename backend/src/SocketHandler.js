@@ -18,6 +18,9 @@ class SocketHandler {
       socket.on('set_username', username => {
         this._handleSetUsername(socket, username)
       })
+      socket.on('start_game', () => {
+        this._handleStartGame(socket)
+      })
       socket.on('end_game', () => {
         this._handleEndGame(socket)
       })
@@ -29,7 +32,6 @@ class SocketHandler {
 
   _handleClientJoin (socket) {
     this._log.info('New client connected', socket.id)
-    this._currentClients.set(socket.id, 'NO_USERNAME_SET')
   }
 
   _ensureGame () {
@@ -49,10 +51,19 @@ class SocketHandler {
     })
   }
 
+  _handleStartGame (socket) {
+    const { username } = this._currentClients.get(socket.id)
+    this._log.info(
+      `User ${username} is starting game`,
+      socket.id
+    )
+    this._currentGame.startGame()
+  }
+
   _handleEndGame (socket) {
     const { username } = this._currentClients.get(socket.id)
     this._log.info(
-      `User ${username} is ending game: ${username}`,
+      `User ${username} is ending game`,
       socket.id
     )
     this._currentGame = null
@@ -70,6 +81,12 @@ class SocketHandler {
     this._currentClients.delete(socket.id)
     if (this._currentGame) {
       this._currentGame.leaveGame(playerId)
+      if (this._currentClients.size <= 0) {
+        this._currentGame = null
+        clearInterval(this._currentGameInterval)
+        this._currentGameInterval = null
+        socket.emit('refresh_client')
+      }
     }
   }
 }
