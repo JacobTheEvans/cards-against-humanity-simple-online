@@ -101,14 +101,14 @@ class Game {
   chooseWinner (playerId, cardId) {
     const { judge } = this._players.get(playerId).getDetails()
     if (judge && this._currentGameState === this._gameStates.judge) {
-      for (const id of this._pot.whiteCards) {
-        const cards = this._pot.get(id).values()
+      for (const name of this._pot.whiteCards) {
+        const cards = this._pot.whiteCards.get(name)
         const winningCard = cards.filter(card => {
-          return card._id === cardId
+          return card._cardId === cardId
         })
         if (winningCard) {
-          const { score } = this._players.get(id).getDetails()
-          this._players.get(id).setScore(score + 1)
+          // const { score } = this._players.get(id).getDetails()
+          // this._players.get(id).setScore(score + 1)
           this._players.get(playerId).setState(this._playerStates.idle)
           break
         }
