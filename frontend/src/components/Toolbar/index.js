@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import Logout from './Logout'
 import NewGame from './NewGame'
+import StartGame from './StartGame'
 
 const Bar = styled.div`
   height: 50px;
@@ -25,6 +26,7 @@ function Toolbar () {
       <Username>{window.localStorage.getItem('username')}</Username>
       <Logout />
       <NewGame />
+      <StartGame />
     </Bar>
   )
 }
