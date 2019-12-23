@@ -117,6 +117,10 @@ class Game {
     return this._deck.getCardPiles()
   }
 
+  getGameState () {
+    return this._currentGameState
+  }
+
   // the servers privates
 
   update () {
