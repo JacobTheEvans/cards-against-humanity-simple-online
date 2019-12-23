@@ -29,14 +29,6 @@ class WhiteCard extends Card {
     super(cardId, text)
     this._playerId = playerId
   }
-
-  getPlayerId () {
-    return this._playerId
-  }
-
-  setPlayerId (playerId) {
-    this._playerId = playerId
-  }
 }
 
 module.exports = {

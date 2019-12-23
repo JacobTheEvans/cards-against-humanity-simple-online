@@ -8,16 +8,16 @@ class Game {
     this._score = []
     this._deck = new Deck(cardLibraryPath)
     this._gameStates = {
-      idle: 0,
-      play: 1,
-      judge: 2,
-      gameover: 3
+      idle: '0',
+      play: '1',
+      judge: '2',
+      gameover: '3'
     }
     this._currentGameState = this._gameStates.idle
     this._playerStates = {
-      idle: 0,
-      play: 1,
-      judge: 2
+      idle: '0',
+      play: '1',
+      judge: '2'
     }
     this._judge = 0
     this._pot = {
@@ -63,6 +63,15 @@ class Game {
     return playerObject.getDetails()
   }
 
+  getPlayers () {
+    let playersStatus = {}
+    for (const player of this._players.values()) {
+      console.log(player)
+      playersStatus[player._name] = player
+    }
+    return playersStatus
+  }
+
   // remove list of cards from hand and add them to the pot, assigned to the
   // playerId as key, returns updated player details
   playCards (playerId, cardIdList) {
@@ -81,9 +90,6 @@ class Game {
       }
       playerObject.setState(this._playerStates.idle)
       this._drawWhiteCards(playerId)
-      console.log('##################################')
-      console.log(playerObject)
-      console.log('##################################')
     }
     return playerObject.getDetails()
   }
@@ -109,7 +115,7 @@ class Game {
 
   // the servers privates
 
-  _update () {
+  update () {
     switch (this._currentGameState) {
       case this._gameStates.idle:
         this._startRound()

@@ -30,7 +30,6 @@ class Deck {
   }
 
   discard (card) {
-    card.setPlayerId(-1)
     this._discardPile.push(card)
   }
 

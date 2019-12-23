@@ -30,7 +30,7 @@ console.log('##############player1 should have got new cards')
 console.log(player1State)
 
 console.log('###############should not be possible to end playing phase')
-currentGame._update()
+currentGame.update()
 
 cards = playCards(player2State)
 player2State = currentGame.playCards(player2State.id, cards)
@@ -47,13 +47,13 @@ console.log(player2State)
 console.log(player3State)
 
 console.log('###############should now be possible to end playing phase')
-currentGame._update()
+currentGame.update()
 
 console.log('###############should now be possible to choose winner')
 currentGame.chooseWinner(player2State.id, 2)
 
 console.log('###############should now be possible to end judging phase and end round')
-currentGame._update()
+currentGame.update()
 
 console.log('############### a new round should be started and everything should be reset')
 console.log(thePot)
@@ -61,7 +61,7 @@ console.log(player1State)
 console.log(player2State)
 console.log(player3State)
 
-currentGame._update()
+currentGame.update()
 
 console.log('############### a new round should be started and everything should be reset')
 
@@ -69,6 +69,8 @@ cards = playCards(player2State)
 player2State = currentGame.playCards(player2State.id, cards)
 console.log(player2State)
 console.log(thePot)
+
+console.log(currentGame.getPlayers())
 
 function playCards (playerState) {
   const numPicks = thePot.blackCard.getPicks()
