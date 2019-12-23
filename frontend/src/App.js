@@ -1,12 +1,10 @@
 import React, { Component } from 'react'
 import socketIOClient from 'socket.io-client'
+
 class App extends Component {
-  constructor () {
-    super()
-    this.state = {
-      response: false,
-      endpoint: 'http://localhost:8080'
-    }
+  state = {
+    response: false,
+    endpoint: 'http://localhost:8080'
   }
 
   componentDidMount () {
