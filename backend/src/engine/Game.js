@@ -41,7 +41,7 @@ class Game {
       playerObject.receiveCard(card)
     }
     this._players.set(playerId, playerObject)
-    this._pot.whiteCards.set(playerId, [])
+    this._pot.whiteCards.set(name, [])
     return playerObject.getDetails()
   }
 
@@ -81,15 +81,15 @@ class Game {
   // playerId as key, returns updated player details
   playCards (playerId, cardIdList) {
     const playerObject = this._players.get(playerId)
-    const { state } = playerObject.getDetails()
+    const { state, name } = playerObject.getDetails()
     // only accept played cards if pot for player is empty and played card
     // amount is the same the black card requires
-    if (state === this._playerStates.play && this._pot.whiteCards.get(playerId).length === 0 &&
+    if (state === this._playerStates.play &&
       cardIdList.length === this._pot.blackCard.getPicks()) {
       for (const cardId of cardIdList) {
         const card = playerObject.removeCard(cardId)
         if (card) {
-          const playerCards = this._pot.whiteCards.get(playerId)
+          const playerCards = this._pot.whiteCards.get(name)
           playerCards.push(card)
         }
       }
@@ -105,7 +105,7 @@ class Game {
       console.log('winner chosen..')
       const winnerId = Array.from(this._pot.whiteCards.keys())[potIndex]
       const { score } = this._players.get(winnerId).getDetails()
-      this._players.get(winnerId).setDetails({ score: score + 1 })
+      this._players.get(winnerId).setScore(score + 1)
       this._players.get(playerId).setState(this._playerStates.idle)
     }
   }
@@ -146,9 +146,9 @@ class Game {
     for (const id of this._players.keys()) {
       const { judge } = this._players.get(id).getDetails()
       if (judge) {
-        this._players.get(id).setDetails({ state: this._playerStates.judge })
+        this._players.get(id).setState(this._playerStates.judge)
       } else {
-        this._players.get(id).setDetails({ state: this._playerStates.play })
+        this._players.get(id).setState(this._playerStates.play)
       }
     }
   }
@@ -176,10 +176,10 @@ class Game {
   _endRound () {
     this._pot.blackCard = null
     for (const playerPot of this._pot.whiteCards) {
-      const playerId = playerPot[0]
       const playerCards = playerPot[1]
-      const playerObject = this._players.get(playerId)
-      playerObject.setDetails({ judge: false })
+      for (const player of this._players) {
+        this._players.get(player).setJudge(false)
+      }
       for (const card of playerCards) {
         this._deck.discard(card)
       }
@@ -239,7 +239,7 @@ class Game {
       : this._judge = 0
     const judgeId = Array.from(this._players.keys())[this._judge]
     const playerObject = this._players.get(judgeId)
-    playerObject.setDetails({ judge: true })
+    playerObject.setJudge(true)
     const { name } = playerObject.getDetails()
     console.log(`New judge: ${name}`)
   }

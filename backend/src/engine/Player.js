@@ -24,13 +24,12 @@ class Player {
     this._state = state
   }
 
-  setDetails (details) {
-    if (details.state) {
-      console.log('got new state')
-      this._state = details.state
-    }
-    if (details.hand) this._hand = details.hand
-    if (details.judge) this._judge = details.judge
+  setScore (score) {
+    this._score = score
+  }
+
+  setJudge (bool) {
+    this._judge = bool
   }
 
   getDetails () {

@@ -70,7 +70,7 @@ player2State = currentGame.playCards(player2State.id, cards)
 console.log(player2State)
 console.log(thePot)
 
-console.log(currentGame.getPlayers())
+console.log(currentGame._getPlayers())
 
 function playCards (playerState) {
   const numPicks = thePot.blackCard.getPicks()
