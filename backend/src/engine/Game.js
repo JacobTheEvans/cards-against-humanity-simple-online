@@ -88,7 +88,6 @@ class Game {
 
   chooseWinner (playerId, potIndex) {
     playerObject.setDetails({ state: this._playerStates.idle })
-    
     const playerId = Array.from(this._pot.whiteCards.keys())[potIndex]
     this._score[playerId] = this._score[playerId] + 1
     return this._score
@@ -209,8 +208,6 @@ class Game {
     const { name } = playerObject.getDetails()
     console.log(`New judge: ${name}`)
   }
-
-
 }
 
 module.exports = Game
