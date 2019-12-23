@@ -54,6 +54,7 @@ class SocketHandler {
       socket.id
     )
     this._currentGame = null
+    socket.emit('refresh_client')
   }
 
   _handleClientLeave (socket) {

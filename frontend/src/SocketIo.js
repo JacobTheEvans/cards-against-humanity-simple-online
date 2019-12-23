@@ -27,6 +27,9 @@ class SocketIoConnection extends Component {
       const { socket } = this.state
       const { username } = this.props
       socket.emit('set_username', username)
+      socket.on('refresh_client', () => {
+        window.location.reload()
+      })
     })
   }
 

@@ -37,7 +37,6 @@ const Button = styled.button`
 
 function newGame (socket) {
   socket.emit('end_game')
-  window.location.reload()
 }
 
 function NewGame ({ socket }) {
