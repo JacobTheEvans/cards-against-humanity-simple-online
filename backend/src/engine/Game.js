@@ -13,7 +13,7 @@ class Game {
       judge: 2,
       gameover: 3
     }
-    this._currentGameState = this._gameStates.wait
+    this._currentGameState = this._gameStates.idle
     this._playerStates = {
       idle: 0,
       play: 1,
@@ -39,7 +39,6 @@ class Game {
       playerObject.receiveCard(card)
     }
     this._players.set(playerId, playerObject)
-    this._score[playerId] = 0
     this._pot.whiteCards.set(playerId, [])
     return playerObject.getDetails()
   }
@@ -71,7 +70,7 @@ class Game {
     const { state } = playerObject.getDetails()
     // only accept played cards if pot for player is empty and played card
     // amount is the same the black card requires
-    if (state === this._players.play && this._pot.whiteCards.get(playerId).length === 0 &&
+    if (state === this._playerStates.play && this._pot.whiteCards.get(playerId).length === 0 &&
       cardIdList.length === this._pot.blackCard.getPicks()) {
       for (const cardId of cardIdList) {
         const card = playerObject.removeCard(cardId)
@@ -80,18 +79,24 @@ class Game {
           playerCards.push(card)
         }
       }
+      playerObject.setState(this._playerStates.idle)
       this._drawWhiteCards(playerId)
-      playerObject.setDetails({ state: this._playerStates.idle })
+      console.log('##################################')
+      console.log(playerObject)
+      console.log('##################################')
     }
     return playerObject.getDetails()
   }
 
   chooseWinner (playerId, potIndex) {
-    playerObject.setDetails({ state: this._playerStates.idle })
-    
-    const playerId = Array.from(this._pot.whiteCards.keys())[potIndex]
-    this._score[playerId] = this._score[playerId] + 1
-    return this._score
+    const { judge } = this._players.get(playerId).getDetails()
+    if (judge && this._currentGameState === this._gameStates.judge) {
+      console.log('winner chosen..')
+      const winnerId = Array.from(this._pot.whiteCards.keys())[potIndex]
+      const { score } = this._players.get(winnerId).getDetails()
+      this._players.get(winnerId).setDetails({ score: score + 1 })
+      this._players.get(playerId).setState(this._playerStates.idle)
+    }
   }
 
   getCardPot () {
@@ -118,17 +123,25 @@ class Game {
       case this._gameStates.gameover:
         break
     }
-    setInterval(this._update(), 250)
   }
 
   _startRound () {
     this._selectJudge()
     this._drawBlackCard()
     this._currentGameState = this._gameStates.play
+    for (const id of this._players.keys()) {
+      const { judge } = this._players.get(id).getDetails()
+      if (judge) {
+        this._players.get(id).setDetails({ state: this._playerStates.judge })
+      } else {
+        this._players.get(id).setDetails({ state: this._playerStates.play })
+      }
+    }
   }
 
   _playingPhase () {
     if (this._checkAllCardsPlayed()) {
+      console.log('all cards played')
       this._currentGameState = this._gameStates.judge
     } else {
       console.log('not all palyers ready yet')
@@ -137,11 +150,12 @@ class Game {
 
   _judgingPhase () {
     if (this._checkJudgingDone()) {
+      console.log('judging done')
       this._checkWinConditions()
       this._endRound()
       this._currentGameState = this._gameStates.idle
     } else {
-      console.log('not done juding yet')
+      console.log('not done judging yet')
     }
   }
 
@@ -175,14 +189,20 @@ class Game {
   }
 
   _checkAllCardsPlayed () {
-    for (const whiteCards of this._pot.whiteCards.values()) {
-      if (whiteCards.length === 0) return false
+    for (const player of this._players.values()) {
+      const { state } = player.getDetails()
+      console.log(state)
+      if (state === this._playerStates.play) return false
     }
     return true
   }
 
   _checkJudgingDone () {
-
+    for (const player of this._players.values()) {
+      const { state } = player.getDetails()
+      if (state === this._playerStates.judge) return false
+    }
+    return true
   }
 
   _checkWinConditions () {

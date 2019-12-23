@@ -5,6 +5,7 @@ class Player {
     this._hand = new Map()
     this._state = 0
     this._judge = false
+    this._score = 0
   }
 
   receiveCard (card) {
@@ -20,15 +21,17 @@ class Player {
     }
   }
 
+  setState (state) {
+    this._state = state
+  }
+
   setDetails (details) {
-    const {
-      state,
-      hand,
-      judge
-    } = details
-    if (state) this._state = state
-    if (hand) this._hand = hand
-    if (judge) this._judge = judge
+    if (details.state) {
+      console.log('got new state')
+      this._state = details.state
+    }
+    if (details.hand) this._hand = details.hand
+    if (details.judge) this._judge = details.judge
   }
 
   getDetails () {
