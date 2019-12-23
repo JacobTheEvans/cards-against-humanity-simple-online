@@ -8,16 +8,16 @@ class Game {
     this._score = []
     this._deck = new Deck(cardLibraryPath)
     this._gameStates = {
-      idle: '0',
-      play: '1',
-      judge: '2',
-      gameover: '3'
+      idle: 0,
+      play: 1,
+      judge: 2,
+      gameover: 3
     }
     this._currentGameState = this._gameStates.idle
     this._playerStates = {
-      idle: '0',
-      play: '1',
-      judge: '2'
+      idle: 0,
+      play: 1,
+      judge: 2
     }
     this._judge = 0
     this._pot = {
@@ -66,7 +66,6 @@ class Game {
   getPlayers () {
     let playersStatus = {}
     for (const player of this._players.values()) {
-      console.log(player)
       playersStatus[player._name] = player
     }
     return playersStatus
