@@ -113,7 +113,7 @@ class Game {
           // this._players.get(id).setScore(score + 1)
           this._players.get(playerId).setState(this._playerStates.idle)
           this._players.get(playerId).setJudge(false)
-          break
+          return playerName          
         }
       }
     }
