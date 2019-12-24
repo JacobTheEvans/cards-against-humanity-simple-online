@@ -190,11 +190,13 @@ class Game {
   _endRound () {
     this._pot.blackCard = null
     for (const playerPot of this._pot.whiteCards) {
+      const playerName = playerPot[0]
       const playerCards = playerPot[1]
       for (const card of playerCards) {
         this._deck.discard(card)
       }
-      playerPot[1] = []
+      //this._pot.whiteCards.delete(playerName)
+      this._pot.whiteCards.set(playerName, [])
     }
   }
 
