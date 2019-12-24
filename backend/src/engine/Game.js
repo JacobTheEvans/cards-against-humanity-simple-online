@@ -104,7 +104,7 @@ class Game {
       for (const playerPot of this._pot.whiteCards) {
         const playerName = playerPot[0]
         const playerCards = playerPot[1]
-        const winningCard = playerCards.filter(card => {
+        const winningCard = playerCards.find(card => {
           return card._cardId === cardId
         })
         if (winningCard) {
@@ -113,7 +113,7 @@ class Game {
           // this._players.get(id).setScore(score + 1)
           this._players.get(playerId).setState(this._playerStates.idle)
           this._players.get(playerId).setJudge(false)
-          return playerName          
+          return playerName
         }
       }
     }
