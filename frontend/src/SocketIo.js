@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import socketIOClient from 'socket.io-client'
+import styled from 'styled-components'
 
 const SocketIo = React.createContext()
 
@@ -19,6 +20,11 @@ export function createSocketIoProvider ({
 }
 
 class SocketIoConnection extends Component {
+  state = {
+    playerData: null,
+    message: null
+  }
+
   componentDidMount () {
     const { endpoint } = this.props
     this.setState({
@@ -30,11 +36,14 @@ class SocketIoConnection extends Component {
       socket.on('refresh_client', () => {
         window.location.reload()
       })
+      socket.on('new_winner', message => {
+        this.setState({
+          message: message
+        })
+      })
       socket.on(`update_${username}`, playerData => {
         this.setState({
           playerData
-        }, () => {
-          console.log(this.state.playerData)
         })
       })
     })
@@ -42,12 +51,30 @@ class SocketIoConnection extends Component {
 
   render () {
     const { children } = this.props
+    const { message } = this.state
     return (
       <SocketIo.Provider value={this.state}>
         {children}
+        <Message message={message} />
       </SocketIo.Provider>
     )
   }
+}
+
+const MessageText = styled.p`
+  position: fixed;
+  left: 10px
+  bottom: 0px
+  font-size: 20px;
+`
+
+function Message ({ message }) {
+  if (!message) return false
+  return (
+    <MessageText>
+      {message} has won!
+    </MessageText>
+  )
 }
 
 export function withSocketIo (PassedComponent) {

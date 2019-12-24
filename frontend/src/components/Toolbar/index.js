@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import Logout from './Logout'
 import NewGame from './NewGame'
 import StartGame from './StartGame'
+import RestartServer from './RestartServer'
 
 const Bar = styled.div`
   height: 50px;
@@ -25,6 +26,7 @@ function Toolbar () {
     <Bar>
       <Username>{window.localStorage.getItem('username')}</Username>
       <Logout />
+      <RestartServer />
       <NewGame />
       <StartGame />
     </Bar>

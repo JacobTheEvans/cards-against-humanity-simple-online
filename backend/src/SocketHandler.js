@@ -30,6 +30,9 @@ class SocketHandler {
       socket.on('end_game', () => {
         this._handleEndGame(socket)
       })
+      socket.on('restart_server', () => {
+        this._handleRestartServer(socket)
+      })
       socket.on('disconnect', () => {
         this._handleClientLeave(socket)
       })
@@ -97,7 +100,11 @@ class SocketHandler {
       `User ${username} has picked the winner`,
       socket.id
     )
-    this._currentGame.chooseWinner(playerId, cardId)
+    const winner = this._currentGame.chooseWinner(playerId, cardId)
+    this._socketServer.emit('new_winner', winner)
+    setTimeout(() => {
+      this._socketServer.emit('new_winner', null)
+    }, 2000)
   }
 
   _handleEndGame (socket) {
@@ -110,6 +117,15 @@ class SocketHandler {
     clearInterval(this._currentGameInterval)
     this._currentGameInterval = null
     socket.emit('refresh_client')
+  }
+
+  _handleRestartServer (socket) {
+    const { username } = this._currentClients.get(socket.id)
+    this._log.info(
+      `User ${username} is restart server`,
+      socket.id
+    )
+    process.exit(0)
   }
 
   _handleClientLeave (socket) {
