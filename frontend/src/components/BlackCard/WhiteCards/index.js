@@ -10,11 +10,18 @@ const Container = styled.div`
   flex-wrap: wrap;
 `
 
+function shouldBeHidden (playerState, gameState) {
+  return (
+    (playerState === 2 && gameState === 1) ||
+    (playerState === 1 && gameState === 1) ||
+    (playerState === 0 && gameState === 1)
+  )
+}
+
 function WhiteCards ({ playerData }) {
   if (!playerData) return false
   if (!playerData._cardPot) return false
   if (!playerData._cardPot.whiteCards) return false
-
   const cards = []
   for (const username in playerData._cardPot.whiteCards) {
     if (!playerData._cardPot.whiteCards[username][0]) continue
@@ -22,7 +29,7 @@ function WhiteCards ({ playerData }) {
       <WhiteCard
         key={username}
         card={playerData._cardPot.whiteCards[username][0]}
-        hidden={playerData._state === 1}
+        hidden={shouldBeHidden(playerData._state, playerData._gameState)}
         playerIsJudge={playerData._judge}
       />
     )

@@ -56,6 +56,7 @@ class SocketHandler {
       const currentPot = this._currentGame.getCardPot()
       updateData._cardPot = JSON.parse(JSON.stringify(currentPot))
       updateData._cardPot.whiteCards = Object.fromEntries(currentPot.whiteCards)
+      updateData._gameState = this._currentGame.getGameState()
       this._socketServer.emit(
         `update_${username}`,
         updateData
