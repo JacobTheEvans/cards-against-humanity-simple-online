@@ -112,6 +112,7 @@ class Game {
           // const { score } = this._players.get(id).getDetails()
           // this._players.get(id).setScore(score + 1)
           this._players.get(playerId).setState(this._playerStates.idle)
+          this._players.get(playerId).setJudge(false)
           break
         }
       }
@@ -137,6 +138,7 @@ class Game {
       switch (this._currentGameState) {
         case this._gameStates.idle:
           this._startRound()
+          console.log(this._pot)
           break
         case this._gameStates.play:
           this._playingPhase()
@@ -189,14 +191,11 @@ class Game {
     this._pot.blackCard = null
     for (const playerPot of this._pot.whiteCards) {
       const playerCards = playerPot[1]
-      for (const player of this._players) {
-        this._players.get(player).setJudge(false)
-      }
       for (const card of playerCards) {
         this._deck.discard(card)
       }
+      playerPot[1] = []
     }
-    this._pot.whiteCards.clear()
   }
 
   _drawBlackCard () {
