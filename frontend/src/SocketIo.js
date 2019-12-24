@@ -4,7 +4,7 @@ import socketIOClient from 'socket.io-client'
 const SocketIo = React.createContext()
 
 export function createSocketIoProvider ({
-  endpoint = 'http://localhost:8080'
+  endpoint = `http://${window.location.hostname}:8080`
 } = {}) {
   return function SocketIoProvider ({ children, username }) {
     return (
