@@ -1,4 +1,5 @@
 #!/bin/sh
-"/app/config/default.template.nginx.conf" > "/etc/nginx/conf.d/default.conf"
-cat /etc/nginx/conf.d/default.conf
+
+#start service on retrieved ip address
+envsubst < "/app/nginx-default-template.config" > "/etc/nginx/conf.d/default.conf"
 nginx -g 'daemon off;'

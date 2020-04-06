@@ -1,0 +1,12 @@
+version: '3.0'
+
+services:
+  cards-against-humanity-frontend:
+    hostname: frontend
+    build: ./frontend
+    depends_on:
+      - backend
+
+  cards-against-humanity-backend:
+    hostname: backend
+    build: ./backend
