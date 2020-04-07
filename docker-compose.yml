@@ -3,10 +3,14 @@ version: '3.0'
 services:
   frontend:
     hostname: frontend
-    build: ./backend
+    build: ./frontend
     depends_on:
       - backend
+    ports:
+      - "80:80"
 
   backend:
     hostname: backend
-    build: ./frontend
+    build: ./backend
+    ports:
+      - "8080:8080"
