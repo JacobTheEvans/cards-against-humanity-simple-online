@@ -1,5 +1,19 @@
 # Cards Against Humanity Simple Online
 
+## How to run
+
+### Prerequisites
+1. Clone the repositiory
+2. Install docker and docker-compose according to the official documentation:
+
+- [Docker](https://docs.docker.com/get-docker/)
+- [Docker-Compose](https://docs.docker.com/compose/install/)
+
+### Run
+1. Change into the cards-against-humanity-simple-online folder.
+2. run ```docker-compose up```
+3. Access http://localhost once the docker containers were started successfully.
+
 ## gamelogic draft
 
 - every card is an object with properties for text and id
