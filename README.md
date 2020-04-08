@@ -5,8 +5,9 @@
 ### Prerequisites
 1. Clone the repositiory
 2. Install docker and docker-compose according to the official documentation:
-[https://docs.docker.com/get-docker/](Docker)
-[https://docs.docker.com/compose/install/](Docker-Compose)
+
+- [Docker](https://docs.docker.com/get-docker/)
+- [Docker-Compose](https://docs.docker.com/compose/install/)
 
 ### Run
 1. Change into the cards-against-humanity-simple-online folder.
