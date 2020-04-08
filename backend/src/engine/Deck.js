@@ -67,11 +67,13 @@ class Deck {
   }
 
   _shuffle (cardPile) {
-    for (let i = cardPile.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1))
-      const temp = cardPile[i]
-      cardPile[i] = cardPile[j]
-      cardPile[j] = temp
+    for (let i = 1000; i > 0; i--) {
+      const pos1 = Math.floor((Math.random() * cardPile.length))
+      const pos2 = Math.floor((Math.random() * cardPile.length))
+      const temp = cardPile[pos1]
+
+      cardPile[pos1] = cardPile[pos2]
+      cardPile[pos2] = temp
     }
   }
 
