@@ -22,21 +22,23 @@ function WhiteCards ({ playerData }) {
   if (!playerData) return false
   if (!playerData._cardPot) return false
   if (!playerData._cardPot.whiteCards) return false
-  const cards = []
-  for (const username in playerData._cardPot.whiteCards) {
-    if (!playerData._cardPot.whiteCards[username][0]) continue
-    cards.push(
-      <WhiteCard
-        key={username}
-        card={playerData._cardPot.whiteCards[username][0]}
-        hidden={shouldBeHidden(playerData._state, playerData._gameState)}
-        playerIsJudge={playerData._judge}
-      />
-    )
+  const cardsToDraw = []
+  for (const { username, cards } of playerData._cardPot.whiteCards) {
+    if (!cards) continue
+    for (const card of cards) {
+      cardsToDraw.push(
+        <WhiteCard
+          key={username}
+          card={card}
+          hidden={shouldBeHidden(playerData._state, playerData._gameState)}
+          playerIsJudge={playerData._judge}
+        />
+      )
+    }
   }
   return (
     <Container>
-      {cards}
+      {cardsToDraw}
     </Container>
   )
 }

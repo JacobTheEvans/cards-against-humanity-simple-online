@@ -23,7 +23,7 @@ class Game {
     this._judge = 0
     this._pot = {
       blackCard: null,
-      whiteCards: new Map(),
+      whiteCards: [],
       winner: null
     }
   }
@@ -40,7 +40,7 @@ class Game {
       playerObject.receiveCard(card)
     }
     this._players.set(playerId, playerObject)
-    this._pot.whiteCards.set(name, [])
+    this._pot.whiteCards.push({ username: name, cards: [] })
     return playerObject.getDetails()
   }
 
@@ -88,12 +88,19 @@ class Game {
       for (const cardId of cardIdList) {
         const card = playerObject.removeCard(cardId)
         if (card) {
-          const playerCards = this._pot.whiteCards.get(name)
-          playerCards.push(card)
+          const { cards } = this._pot.whiteCards.find(
+            whiteCards => {
+              return whiteCards.username === name
+            }
+          )
+          cards.push(card)
         }
       }
       playerObject.setState(this._playerStates.idle)
       this._drawWhiteCards(playerId)
+      if (this._pot.whiteCards.length > 1) {
+        this._deck.shuffle(this._pot.whiteCards)
+      }
     }
     return playerObject.getDetails()
   }
@@ -101,19 +108,17 @@ class Game {
   chooseWinner (playerId, cardId) {
     const { judge } = this._players.get(playerId).getDetails()
     if (judge && this._currentGameState === this._gameStates.judge) {
-      for (const playerPot of this._pot.whiteCards) {
-        const playerName = playerPot[0]
-        const playerCards = playerPot[1]
-        const winningCard = playerCards.find(card => {
+      for (const { username, cards } of this._pot.whiteCards) {
+        const winningCard = cards.find(card => {
           return card._cardId === cardId
         })
         if (winningCard) {
-          console.log(playerName)
+          console.log(username)
           // const { score } = this._players.get(id).getDetails()
           // this._players.get(id).setScore(score + 1)
           this._players.get(playerId).setState(this._playerStates.idle)
           this._players.get(playerId).setJudge(false)
-          return playerName
+          return username
         }
       }
     }
@@ -189,14 +194,11 @@ class Game {
 
   _endRound () {
     this._pot.blackCard = null
-    for (const playerPot of this._pot.whiteCards) {
-      const playerName = playerPot[0]
-      const playerCards = playerPot[1]
-      for (const card of playerCards) {
+    for (const { cards } of this._pot.whiteCards) {
+      for (const card of cards) {
         this._deck.discard(card)
+        cards.pop()
       }
-      //this._pot.whiteCards.delete(playerName)
-      this._pot.whiteCards.set(playerName, [])
     }
   }
 

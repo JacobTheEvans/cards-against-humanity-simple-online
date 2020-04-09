@@ -11,8 +11,8 @@ class Deck {
 
     this._blackCards = this._createBlackCards(cardList.blackCards)
     this._whiteCards = this._createWhiteCards(cardList.whiteCards)
-    this._shuffle(this._blackCards)
-    this._shuffle(this._whiteCards)
+    this.shuffle(this._blackCards)
+    this.shuffle(this._whiteCards)
     this._discardPile = []
   }
 
@@ -41,6 +41,17 @@ class Deck {
     }
   }
 
+  shuffle (cardPile) {
+    for (let i = 1000; i > 0; i--) {
+      const pos1 = Math.floor((Math.random() * cardPile.length))
+      const pos2 = Math.floor((Math.random() * cardPile.length))
+      const temp = cardPile[pos1]
+
+      cardPile[pos1] = cardPile[pos2]
+      cardPile[pos2] = temp
+    }
+  }
+
   _createBlackCards (cardList) {
     const formatedList = []
     for (const card of cardList) {
@@ -60,18 +71,9 @@ class Deck {
 
   _shuffleDiscardPile () {
     if (this._discardPile.length > 0) {
-      this._shuffle(this._discardPile)
+      this.shuffle(this._discardPile)
       this._whiteCards = this._discardPile
       this._discardPile = []
-    }
-  }
-
-  _shuffle (cardPile) {
-    for (let i = cardPile.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1))
-      const temp = cardPile[i]
-      cardPile[i] = cardPile[j]
-      cardPile[j] = temp
     }
   }
 
