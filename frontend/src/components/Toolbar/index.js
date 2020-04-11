@@ -4,6 +4,7 @@ import Logout from './Logout'
 import NewGame from './NewGame'
 import StartGame from './StartGame'
 import RestartServer from './RestartServer'
+import Submit from './Submit'
 
 const Bar = styled.div`
   height: 50px;
@@ -29,6 +30,7 @@ function Toolbar () {
       <RestartServer />
       <NewGame />
       <StartGame />
+      <Submit />
     </Bar>
   )
 }

@@ -76,22 +76,33 @@ class Game {
     return playersStatus
   }
 
+  chooseCardToPlay (playerId, cardId) {
+    const playerObject = this._players.get(playerId)
+    const { state } = playerObject.getDetails()
+    if (state === this._playerStates.play) {
+      playerObject.chooseCard(cardId, this._pot.blackCard.getPicks())
+      console.log(playerObject.getDetails())
+    }
+    return playerObject.getDetails()
+  }
+
   // remove list of cards from hand and add them to the pot, assigned to the
   // playerId as key, returns updated player details
-  playCards (playerId, cardIdList) {
+  playCards (playerId) {
     const playerObject = this._players.get(playerId)
-    const { state, name } = playerObject.getDetails()
+    const { state, name, chosenCards } = playerObject.getDetails()
     // only accept played cards if pot for player is empty and played card
     // amount is the same the black card requires
     if (state === this._playerStates.play &&
-      cardIdList.length === this._pot.blackCard.getPicks()) {
-      for (const cardId of cardIdList) {
+      chosenCards.length === this._pot.blackCard.getPicks()) {
+      for (const cardId of chosenCards) {
         const card = playerObject.removeCard(cardId)
         if (card) {
           const playerCards = this._pot.whiteCards.get(name)
           playerCards.push(card)
         }
       }
+      playerObject.clearChosenCards()
       playerObject.setState(this._playerStates.idle)
       this._drawWhiteCards(playerId)
     }

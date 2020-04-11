@@ -21,8 +21,11 @@ class SocketHandler {
       socket.on('start_game', () => {
         this._handleStartGame(socket)
       })
-      socket.on('play_white_cards', cardIds => {
-        this._handlePlayWhiteCards(socket, cardIds)
+      socket.on('choose_white_card', cardId => {
+        this._handleChooseWhiteCard(socket, cardId)
+      })
+      socket.on('play_white_cards', () => {
+        this._handlePlayWhiteCards(socket)
       })
       socket.on('pick_winner', cardId => {
         this._handlePickWinner(socket, cardId)
@@ -85,13 +88,22 @@ class SocketHandler {
     this._currentGame.startGame()
   }
 
-  _handlePlayWhiteCards (socket, cardIds) {
+  _handleChooseWhiteCard (socket, cardId) {
     const { playerId, username } = this._currentClients.get(socket.id)
     this._log.info(
-      `User ${username} is playing white cards`,
+      `User ${username} is choosing white card`,
       socket.id
     )
-    this._currentGame.playCards(playerId, cardIds)
+    this._currentGame.chooseCardToPlay(playerId, cardId)
+  }
+
+  _handlePlayWhiteCards (socket) {
+    const { playerId, username } = this._currentClients.get(socket.id)
+    this._log.info(
+      `User ${username} is paying white cards`,
+      socket.id
+    )
+    this._currentGame.playCards(playerId)
   }
 
   _handlePickWinner (socket, cardId) {

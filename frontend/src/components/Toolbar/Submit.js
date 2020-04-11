@@ -3,11 +3,11 @@ import styled from 'styled-components'
 import { withSocketIo } from '../../SocketIo'
 
 const Button = styled.button`
-  border-radius: 20px;
-  margin: 10px 20px;
+  margin-left: auto;
   display:inline-block;
   padding: 14px 21px;
   border: 0.16em solid #FFFFFF;
+  margin: 0 0.3em 0.3em 0;
   box-sizing: border-box;
   text-decoration:none;
   text-transform:uppercase;
@@ -17,17 +17,15 @@ const Button = styled.button`
   text-align:center;
   transition: all 0.15s;
   background-color: white;
-  height: 325px;
-  width: 225px;
 
   &:hover {
     color: #000;
-    border-color: ${({ disabled }) => disabled ? 'white' : 'black'};
+    border-color: #000;
   }
 
   &:active {
     color: #BBBBBB;
-    border-color: ${({ disabled }) => disabled ? 'white' : 'black'};
+    border-color: #000;
   }
 
   @media all and (max-width:30em) {
@@ -38,20 +36,18 @@ const Button = styled.button`
   }
 `
 
-function pickCard (socket, cardId, disabled) {
-  if (disabled) return
-  socket.emit('choose_white_card', cardId)
+function submit (socket) {
+  socket.emit('play_white_cards')
 }
 
-function WhiteCard ({ card, disabled, socket }) {
+function Submit ({ socket }) {
   return (
     <Button
-      disabled={disabled}
-      onClick={() => pickCard(socket, card._cardId, disabled)}
+      onClick={() => submit(socket)}
     >
-      {card._text}
+      Submit
     </Button>
   )
 }
 
-export default withSocketIo(WhiteCard)
+export default withSocketIo(Submit)
